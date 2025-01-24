@@ -45,12 +45,25 @@ const REGISTERED_COMPONENTS = [
 ];
 
 // TODO: enter your public API key
-const BUILDER_PUBLIC_API_KEY = 'db60bf3db7fa4db7be81ef05b72bd720'; // ggignore
+const BUILDER_PUBLIC_API_KEY = '717f6f07a937428fb26823965e8bc41c'; // ggignore
 const content = ref<BuilderContent | null>(null);
 const canShowContent = ref(false);
 const model = 'page';
 
-onMounted(async () => {
+// onMounted(async () => {
+//   content.value = await fetchOneEntry({
+//     model,
+//     apiKey: BUILDER_PUBLIC_API_KEY,
+//     options: getBuilderSearchParams(new URL(location.href).searchParams),
+//     userAttributes: {
+//       urlPath: window.location.pathname,
+//     },
+//     enrich: true
+//   });
+//   canShowContent.value = content.value ? true : isPreviewing();
+// });
+
+async function fetchContent() {
   content.value = await fetchOneEntry({
     model,
     apiKey: BUILDER_PUBLIC_API_KEY,
@@ -58,10 +71,13 @@ onMounted(async () => {
     userAttributes: {
       urlPath: window.location.pathname,
     },
-    enrich: true
+    enrich: true,
   });
   canShowContent.value = content.value ? true : isPreviewing();
-});
+}
+
+fetchContent();
+
 </script>
 
 <template>
@@ -76,7 +92,7 @@ onMounted(async () => {
         {{ (content && content.data && content.data.title) || 'Unpublished' }}
       </div>
       <Content :model="model" :content="content" :api-key="BUILDER_PUBLIC_API_KEY"
-        :customComponents="REGISTERED_COMPONENTS" :enrich="true" />
+        :customComponents="REGISTERED_COMPONENTS" :enrich="true" :data="{ name: 'My HTML Attribute text' }" />
     </div>
     <div v-else>Content not Found</div>
   </div>
