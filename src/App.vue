@@ -5,6 +5,7 @@ import {
   isPreviewing,
   type BuilderContent,
   getBuilderSearchParams,
+  fetchEntries,
 } from '@builder.io/sdk-vue';
 import { onMounted, ref } from 'vue';
 
@@ -45,8 +46,9 @@ const REGISTERED_COMPONENTS = [
 ];
 
 // TODO: enter your public API key
-const BUILDER_PUBLIC_API_KEY = '717f6f07a937428fb26823965e8bc41c'; // ggignore
+const BUILDER_PUBLIC_API_KEY = 'db60bf3db7fa4db7be81ef05b72bd720'; // ggignore
 const content = ref<BuilderContent | null>(null);
+const allContent = ref<BuilderContent[]>([]);
 const canShowContent = ref(false);
 const model = 'page';
 
@@ -77,6 +79,25 @@ async function fetchContent() {
 }
 
 fetchContent();
+
+async function fetchAllContent() {
+  try {
+    const response = await fetchEntries({
+      model,
+      apiKey: BUILDER_PUBLIC_API_KEY,
+      locale: 'en-US',
+      options: { noTargeting: true }
+    });
+
+    console.log('Fetched Content:', response); // Log the response
+    allContent.value = response;
+  } catch (error) {
+    console.error('Error fetching content:', error);
+  }
+}
+
+fetchAllContent();
+
 
 </script>
 
